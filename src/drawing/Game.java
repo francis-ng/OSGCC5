@@ -25,6 +25,7 @@ public class Game extends JPanel implements Runnable, MouseMotionListener {
     int mousex, mousey;
     int score,spawntime;
     int[] enemynumber = new int[1];
+    ArrayList<Missile> missile;
     
     public Game() {
         URL p1 = this.getClass().getResource("player.png");
@@ -38,6 +39,7 @@ public class Game extends JPanel implements Runnable, MouseMotionListener {
         addMouseMotionListener(this);
         main = new Thread(this);
         player = new Player(40, 40);
+        missile = new ArrayList<Missile>();
         main.start();
     }
     
@@ -50,6 +52,9 @@ public class Game extends JPanel implements Runnable, MouseMotionListener {
         for(int i = 0; i < enemyvector.size(); i++){
             enemy = (Enemy) enemyvector.get(i);
             g.fillOval(enemy.getPosx(), enemy.getPosy(), enemy.getWidth(), enemy.getHeight());
+        }
+        for(int i = 0; i < missile.size(); i++){
+            g.fillOval(missile.get(i).getPosx(), missile.get(i).getPosy(), 4, 4);
         }
         g.drawRect(mousex-10, mousey-10,20,20);
     }
@@ -70,6 +75,11 @@ public class Game extends JPanel implements Runnable, MouseMotionListener {
     public void mouseDragged(MouseEvent e) {
         mousex = e.getX();
         mousey = e.getY();
+    }
+    
+    public void mouseClicked(MouseEvent e){
+        //add a thread, add into arraylist/vector
+    	missile.add(new Missile(player.getPosx(), player.getPosy(), e.getX()-10, e.getY()-35));
     }
     
     public void run() {
