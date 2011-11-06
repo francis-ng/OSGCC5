@@ -98,4 +98,6 @@ public class Player implements Runnable{
     public int getHeight() {
         return height;
     }
+    
+    //delete this later
 }
