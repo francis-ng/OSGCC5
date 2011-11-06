@@ -10,6 +10,7 @@ package drawing;
  */
 public class Enemy implements Runnable{
     Thread enemy;
+    boolean dead;
     int posx, posy, width, height, health, playerx, playery, delay;
     
     public Enemy(int px, int py, int w, int h, int targetx, int targety) {
@@ -24,7 +25,7 @@ public class Enemy implements Runnable{
     }
     
     public void run() {
-        while(true) {
+        while(!dead) {
             try {
                 Thread.sleep(delay);
             }catch (InterruptedException e) {
@@ -34,10 +35,10 @@ public class Enemy implements Runnable{
     }
     
     public void chase() {
-        if(playerx > posx)
+        if((playerx + 10) > posx)
             posx++;
         else posx--;
-        if(playery > posy)
+        if((playery + 10) > posy)
             posy++;
         else posy--;
     }

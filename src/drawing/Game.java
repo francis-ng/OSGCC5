@@ -4,6 +4,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
+import java.util.Random;
+import java.util.Date;
 import java.util.Vector;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -21,6 +23,8 @@ public class Game extends JPanel implements Runnable, MouseMotionListener {
     AffineTransform tx;
     AffineTransformOp op;
     int mousex, mousey;
+    int score,spawntime;
+    int[] enemynumber = new int[1];
     
     public Game() {
         URL p1 = this.getClass().getResource("player.png");
@@ -69,13 +73,43 @@ public class Game extends JPanel implements Runnable, MouseMotionListener {
     }
     
     public void run() {
-        Enemy1 mini1 = new Enemy1(50,50,20,20,player.getPosx(),player.getPosy());
-        enemyvector.add(mini1);
+        Date D = new Date();
+        long reference = D.getTime();
+        long now;
+        Random R = new Random();
+        
+        spawntime = 5000;
+        enemynumber[0] = 5;
+        
         while (true) {
             try {
                 Thread.sleep(20);
             } catch (InterruptedException e) {
                 System.out.println("Interrupted");
+            }
+            
+            D = new Date();
+            now = D.getTime();
+            if((now - reference) > spawntime){
+                for(int i = 0; i < enemynumber.length;i++){
+                    for(int j = 0; j < enemynumber[i];j++){
+                        int enemyx, enemyy;
+                        if(R.nextInt(2) == 0){
+                            enemyx = R.nextInt(620);
+                            if(R.nextInt(2) == 0)
+                                enemyy = -20;
+                            else enemyy = 620;
+                        }else{
+                            enemyy = R.nextInt(620);
+                            if(R.nextInt(2) == 0)
+                                enemyx = -20;
+                            else enemyx = 620;
+                        }
+                        Enemy1 mini1 = new Enemy1(enemyx,enemyy,20,20,player.getPosx(),player.getPosy());
+                        enemyvector.add(mini1);
+                    }
+                }
+                reference = now;
             }
             
             for(int i = 0; i < enemyvector.size(); i++){
