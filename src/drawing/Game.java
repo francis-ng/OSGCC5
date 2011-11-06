@@ -129,18 +129,28 @@ public class Game extends JPanel implements Runnable{
                     System.out.println("Ouch");
                 }
             }
-            Iterator i = missile.iterator();
-            Iterator j = enemyvector.iterator();
-            while (i.hasNext()) {
-                while (j.hasNext()) {
-                    Missile m = (Missile)i.next();
-                    Enemy e = (Enemy)j.next();
-                    if (m.box.intersects(e.box)) {
-                        i.remove();
-                        m.destroy();
-                    }
-                }
+            
+            for(int i = 0; i < missile.size(); i++){
+                for(int j = 0; j < enemyvector.size(); j++){
+            		if(missile.get(i).box.intersects(enemyvector.elementAt(j).box)){
+            			missile.get(i).destroy();
+            			enemyvector.elementAt(j).kill();
+            		}
+            	}
             }
+            for(int i = 0; i < missile.size(); i++){
+            	if(missile.get(i).getDestroy()){
+            		missile.remove(i);
+            	}
+            }
+            for(int i = 0; i < enemyvector.size(); i++){
+            	if(enemyvector.elementAt(i).getDead()){
+            		enemyvector.remove(i);
+            	}
+            }
+            System.out.println("missile number" + missile.size());
+            System.out.println("enemy number" + enemyvector.size());
+
             repaint();
             
         }

@@ -78,4 +78,12 @@ public class Enemy implements Runnable{
     public int getHealth() {
         return health;
     }
+    
+    public void kill(){
+        dead = true;
+    }
+    
+    public boolean getDead(){
+    	return dead;
+    }
 }

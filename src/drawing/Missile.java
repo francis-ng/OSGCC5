@@ -28,6 +28,8 @@ public class Missile implements Runnable{
             }catch (InterruptedException e) {
             }
             move();
+            if(!(posx > -10 && posx < 610 && posy > -10 && posy < 610))
+                destroy();
         }
     }
     
@@ -62,5 +64,9 @@ public class Missile implements Runnable{
     
     public void destroy() {
         destroyed = true;
+    }
+
+    public boolean getDestroy(){
+    	return destroyed;
     }
 }
