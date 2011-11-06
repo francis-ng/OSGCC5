@@ -11,12 +11,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.awt.image.*;
 import java.net.URL;
-import java.awt.geom.AffineTransform;
 
-public class Game extends JPanel implements Runnable{// MouseMotionListener, MouseEventListener {
+public class Game extends JPanel implements Runnable{
     Thread main;
     Player player;
-    Vector enemyvector = new Vector();
+    Vector<Enemy> enemyvector = new Vector();
     Enemy enemy;
     BufferedImage playerimg, bgimg;
     int mousex, mousey;
@@ -50,7 +49,7 @@ public class Game extends JPanel implements Runnable{// MouseMotionListener, Mou
             g.fillOval(enemy.getPosx(), enemy.getPosy(), enemy.getWidth(), enemy.getHeight());
         }
         for(int i = 0; i < missile.size(); i++){
-            g.fillOval(missile.get(i).getPosx(), missile.get(i).getPosy(), 4, 4);
+            g.fillOval(missile.get(i).getPosx(), missile.get(i).getPosy(), missile.get(i).getWidth(), missile.get(i).getHeight());
         }
         g.drawRect(mousex-15, mousey-35,20,20);
     }
@@ -75,7 +74,7 @@ public class Game extends JPanel implements Runnable{// MouseMotionListener, Mou
     
     public void mousePressed(MouseEvent e){
         //add a thread, add into arraylist/vector
-        missile.add(new Missile(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+        missile.add(new Missile(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45, 4, 4));
     }
     
     public void run() {
@@ -122,6 +121,19 @@ public class Game extends JPanel implements Runnable{// MouseMotionListener, Mou
                 enemy = (Enemy) enemyvector.get(i);
                 enemy.playerx = player.getPosx();
                 enemy.playery = player.getPosy();
+            }
+            
+            for (Enemy e:enemyvector) {
+                if (player.box.intersects(e.box)) {
+                    System.out.println("Ouch");
+                }
+            }
+            for (Missile m:missile) {
+                for (Enemy e:enemyvector) {
+                    if (m.box.intersects(e.box)) {
+                        System.out.println("Hit!");
+                    }
+                }
             }
             repaint();
             

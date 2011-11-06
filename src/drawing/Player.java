@@ -1,4 +1,5 @@
 package drawing;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
 public class Player implements Runnable{
@@ -6,12 +7,14 @@ public class Player implements Runnable{
     private int posx, posy, width, height;
     boolean movel, mover, moveu, moved;
     private final int move = 2;
+    Rectangle box;
     
     public Player(int w, int h) {
         posx = 0;
         posy = 0;
         width = w;
         height = h;
+        box = new Rectangle(posx, posy, w, h);
         movel = false;
         mover = false;
         moveu = false;
@@ -21,10 +24,22 @@ public class Player implements Runnable{
     }
     
     public void move() {
-        if (moveu) posy -= move;
-        if (moved) posy += move;
-        if (movel) posx -= move;
-        if (mover) posx += move;
+        if (moveu) {
+            posy -= move;
+            box.translate(0,-move);
+        }
+        if (moved) {
+            posy += move;
+            box.translate(0,move);
+        }
+        if (movel) {
+            posx -= move;
+            box.translate(-move,0);
+        }
+        if (mover) {
+            posx += move;
+            box.translate(move,0);
+        }
     }
     
     public void run() {

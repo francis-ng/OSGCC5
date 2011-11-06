@@ -1,15 +1,18 @@
 package drawing;
+import java.awt.Rectangle;
 
 public class Enemy implements Runnable{
     Thread enemy;
     boolean dead;
     int posx, posy, width, height, health, playerx, playery, delay;
+    Rectangle box;
     
     public Enemy(int px, int py, int w, int h, int targetx, int targety) {
         posx = px;
         posy = py;
         width = w;
         height = h;
+        box = new Rectangle(px,py,w,h);
         playerx = targetx;
         playery = targety;
         enemy = new Thread(this);
@@ -33,6 +36,7 @@ public class Enemy implements Runnable{
         if((playery + 10) > posy)
             posy++;
         else posy--;
+        box.setLocation(posx, posy);
     }
  
     public void setPosx(int px) {
