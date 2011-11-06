@@ -21,8 +21,10 @@ public class Game extends JPanel implements Runnable{
     BufferedImage playerimg, bgimg;
     int mousex, mousey;
     int score,spawntime;
-    int[] enemynumber = new int[1];
+    int[] enemynumber = new int[2];
     ArrayList<Missile> missile;
+    int missilenumber = 0;
+    int missiletype = 1;
     
     public Game() {
         URL p1 = this.getClass().getResource("player.png");
@@ -75,17 +77,37 @@ public class Game extends JPanel implements Runnable{
     
     public void mousePressed(MouseEvent e){
         //add a thread, add into arraylist/vector
-        missile.add(new Missile1(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+    	if(missilenumber <= 0)
+    		missiletype = 1;
+    	
+    	if(missiletype == 1){
+    		missile.add(new Missile1(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+    	}else{
+    		if(missiletype == 2){
+    			missile.add(new Missile2(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+    		}
+    		if(missiletype == 3){
+    			missile.add(new Missile3(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+    		}
+    		missilenumber--;
+    		
+    	}
+
+    	
+    	
+    	System.out.println("missile " + missiletype + " missile number " + missilenumber);
+    	
     }
     
     public void run() {
         Date D = new Date();
-        long reference = D.getTime();
+        long reference = D.getTime() - 7000;
         long now;
         Random R = new Random();
         
-        spawntime = 5000;
-        enemynumber[0] = 5;
+        spawntime = 10000;
+        enemynumber[0] = 1;
+        enemynumber[1] = 2;
         
         while (true) {
             try {
@@ -111,8 +133,14 @@ public class Game extends JPanel implements Runnable{
                                 enemyx = -20;
                             else enemyx = 620;
                         }
-                        Enemy1 mini1 = new Enemy1(enemyx,enemyy,20,20,player.getPosx(),player.getPosy());
-                        enemyvector.add(mini1);
+                        if(i == 0){
+                        	Enemy1 mini1 = new Enemy1(enemyx,enemyy,20,20,player.getPosx(),player.getPosy());
+                        	enemyvector.add(mini1);
+                        }
+                        else if(i == 1){
+                        	Enemy2 mini2 = new Enemy2(enemyx,enemyy,25,25,player.getPosx(),player.getPosy());
+                            enemyvector.add(mini2);
+                        }
                     }
                 }
                 reference = now;
@@ -126,7 +154,7 @@ public class Game extends JPanel implements Runnable{
             
             for (Enemy e:enemyvector) {
                 if (player.box.intersects(e.box)) {
-                    System.out.println("Ouch");
+                    //System.out.println("Ouch");
                 }
             }
             
@@ -135,7 +163,12 @@ public class Game extends JPanel implements Runnable{
             		if(missile.get(i).box.intersects(enemyvector.elementAt(j).box)){
             			missile.get(i).destroy();
             			enemyvector.elementAt(j).health -= missile.get(i).damage;
-                                if (enemyvector.elementAt(j).health <= 0) enemyvector.elementAt(j).kill();
+                        if (enemyvector.elementAt(j).health <= 0) enemyvector.elementAt(j).kill();
+                        if(missiletype == 1){
+                        	missiletype = enemyvector.elementAt(i).missiletype;
+                        	missilenumber = 10;
+                        }
+                        System.out.println("missiletype " + missiletype);
             		}
             	}
             }
@@ -149,9 +182,8 @@ public class Game extends JPanel implements Runnable{
             		enemyvector.remove(i);
             	}
             }
-            System.out.println("missile number" + missile.size());
-            System.out.println("enemy number" + enemyvector.size());
-
+            
+            
             repaint();
             
         }

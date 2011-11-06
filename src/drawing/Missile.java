@@ -8,6 +8,8 @@ public class Missile implements Runnable{
     int width, height;
     Rectangle box;
     private boolean destroyed;
+    //int missilenumber = 0;
+    
     
     public Missile(int startx, int starty, int endx, int endy) {
         posx = startx + 20;
