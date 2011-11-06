@@ -1,5 +1,6 @@
 package drawing;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 public class Enemy implements Runnable{
     Thread enemy;
@@ -7,6 +8,8 @@ public class Enemy implements Runnable{
     int posx, posy, width, height, health, playerx, playery, delay;
     Rectangle box;
     int missiletype;
+    BufferedImage myimg;
+    int score, damage;
     
     public Enemy(int px, int py, int w, int h, int targetx, int targety) {
         posx = px;
@@ -23,7 +26,7 @@ public class Enemy implements Runnable{
     public void run() {
         while(!dead) {
             try {
-                Thread.sleep(delay);
+                Thread.sleep(20);
             }catch (InterruptedException e) {
             }
             chase();

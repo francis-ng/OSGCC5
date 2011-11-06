@@ -10,8 +10,8 @@ public class Player implements Runnable{
     Rectangle box;
     
     public Player(int w, int h) {
-        posx = 0;
-        posy = 0;
+        posx = 300;
+        posy = 300;
         width = w;
         height = h;
         box = new Rectangle(posx, posy, w, h);

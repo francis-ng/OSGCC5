@@ -1,5 +1,6 @@
 package drawing;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 public class Missile implements Runnable{
     private Thread missile;
@@ -8,7 +9,7 @@ public class Missile implements Runnable{
     int width, height;
     Rectangle box;
     private boolean destroyed;
-    //int missilenumber = 0;
+    BufferedImage myimg;
     
     
     public Missile(int startx, int starty, int endx, int endy) {

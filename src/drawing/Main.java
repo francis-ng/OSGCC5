@@ -8,7 +8,7 @@ public class Main extends JFrame{
     private Game main = new Game();
     
     Main () {
-        super("Meow Meow Shutter");
+        super("Meow Meow Panic");
         setBounds(100,100,600,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container con = this.getContentPane();
