@@ -52,7 +52,7 @@ public class Game extends JPanel implements Runnable{// MouseMotionListener, Mou
         for(int i = 0; i < missile.size(); i++){
             g.fillOval(missile.get(i).getPosx(), missile.get(i).getPosy(), 4, 4);
         }
-        g.drawRect(mousex, mousey-25,20,20);
+        g.drawRect(mousex-15, mousey-35,20,20);
     }
     
     public void keyPressed (KeyEvent e) {
@@ -75,7 +75,7 @@ public class Game extends JPanel implements Runnable{// MouseMotionListener, Mou
     
     public void mousePressed(MouseEvent e){
         //add a thread, add into arraylist/vector
-        missile.add(new Missile(player.getPosx(), player.getPosy(), e.getX()-10, e.getY()-35));
+        missile.add(new Missile(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
     }
     
     public void run() {
