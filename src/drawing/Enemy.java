@@ -6,6 +6,7 @@ public class Enemy implements Runnable{
     boolean dead;
     int posx, posy, width, height, health, playerx, playery, delay;
     Rectangle box;
+    int missiletype;
     
     public Enemy(int px, int py, int w, int h, int targetx, int targety) {
         posx = px;
