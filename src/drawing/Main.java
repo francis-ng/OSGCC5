@@ -30,10 +30,11 @@ public class Main extends JFrame{
                 winKeyRelease(e);
             }
         });
-         this.addMouseListener(new MouseAdapter(){
+        this.addMouseListener(new MouseAdapter(){
             public void mousePressed(MouseEvent e){
-        		mouseClick(e);
-        	}
+                System.out.println("lala");
+        	mouseClick(e);
+            }
         });
         setResizable(false);
         setVisible(true);

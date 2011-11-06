@@ -80,7 +80,7 @@ public class Game extends JPanel implements Runnable, MouseMotionListener {
     }
     
     public void mouseClicked(MouseEvent e){
-        //add a thread, add into arraylist/vector
+        System.out.println("Add missile");
     	missile.add(new Missile(player.getPosx(), player.getPosy(), e.getX()-10, e.getY()-35));
     }
     
