@@ -9,16 +9,14 @@ package drawing;
  * @author Francis
  */
 public class Enemy implements Runnable{
-    private Thread enemy;
-    private int posx, posy, width, height, health, playerx, playery;
-    private double speed = 0.2;
+    Thread enemy;
+    int posx, posy, width, height, health, playerx, playery, delay;
     
-    public Enemy(int px, int py, int w, int h, int hp, int targetx, int targety) {
+    public Enemy(int px, int py, int w, int h, int targetx, int targety) {
         posx = px;
         posy = py;
         width = w;
         height = h;
-        health = hp;
         playerx = targetx;
         playery = targety;
         enemy = new Thread(this);
@@ -28,7 +26,7 @@ public class Enemy implements Runnable{
     public void run() {
         while(true) {
             try {
-                Thread.sleep(10);
+                Thread.sleep(delay);
             }catch (InterruptedException e) {
             }
             chase();
@@ -36,10 +34,12 @@ public class Enemy implements Runnable{
     }
     
     public void chase() {
-        int dirx = playerx - posx;
-        int diry = playery - posy;
-        posx += dirx * speed;
-        posy += diry * speed;
+        if(playerx > posx)
+            posx++;
+        else posx--;
+        if(playery > posy)
+            posy++;
+        else posy--;
     }
  
     public void setPosx(int px) {
