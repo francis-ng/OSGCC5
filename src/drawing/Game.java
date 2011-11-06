@@ -6,17 +6,26 @@ import java.util.Vector;
 import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
-import javax.imageio.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 
 public class Game extends JPanel implements Runnable {
     Thread main;
     Player player;
     Vector enemyvector = new Vector();
     Enemy enemy;
+    BufferedImage playerimg;
     
     public Game() {
+        URL url = this.getClass().getResource("player.png");
+        try {
+            playerimg = ImageIO.read(url);
+        } catch (IOException e) {
+            System.out.println("error");
+        }
         main = new Thread(this);
-        player = new Player(20, 20);
+        player = new Player(40, 40);
         main.start();
     }
     
@@ -25,7 +34,7 @@ public class Game extends JPanel implements Runnable {
         super.paintComponent(g);
         setBackground(Color.green);
         g.setColor(Color.red);
-        g.fillOval(player.getPosx(), player.getPosy(), player.getWidth(), player.getHeight());
+        g.drawImage(playerimg, player.getPosx(), player.getPosy(), player.getWidth(), player.getHeight(), null);
         for(int i = 0; i < enemyvector.size(); i++){
             enemy = (Enemy) enemyvector.get(i);
             g.fillOval(enemy.getPosx(), enemy.getPosy(), enemy.getWidth(), enemy.getHeight());
