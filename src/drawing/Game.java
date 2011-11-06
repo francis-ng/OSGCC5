@@ -11,16 +11,14 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.awt.image.*;
 import java.net.URL;
-import java.awt.geom.AffineTransform;
+import java.util.Iterator;
 
-public class Game extends JPanel implements Runnable{// MouseMotionListener, MouseEventListener {
+public class Game extends JPanel implements Runnable{
     Thread main;
     Player player;
-    Vector enemyvector = new Vector();
+    Vector<Enemy> enemyvector = new Vector();
     Enemy enemy;
     BufferedImage playerimg, bgimg;
-    AffineTransform tx;
-    AffineTransformOp op;
     int mousex, mousey;
     int score,spawntime;
     int[] enemynumber = new int[1];
@@ -35,7 +33,6 @@ public class Game extends JPanel implements Runnable{// MouseMotionListener, Mou
         } catch (IOException e) {
             System.out.println("error");
         }
-        //addMouseMotionListener(this);
         main = new Thread(this);
         player = new Player(40, 40);
         missile = new ArrayList<Missile>();
@@ -53,9 +50,9 @@ public class Game extends JPanel implements Runnable{// MouseMotionListener, Mou
             g.fillOval(enemy.getPosx(), enemy.getPosy(), enemy.getWidth(), enemy.getHeight());
         }
         for(int i = 0; i < missile.size(); i++){
-            g.fillOval(missile.get(i).getPosx(), missile.get(i).getPosy(), 4, 4);
+            g.fillOval(missile.get(i).getPosx(), missile.get(i).getPosy(), missile.get(i).getWidth(), missile.get(i).getHeight());
         }
-        g.drawRect(mousex-5, mousey-25,20,20);
+        g.drawRect(mousex-15, mousey-35,20,20);
     }
     
     public void keyPressed (KeyEvent e) {
@@ -78,7 +75,7 @@ public class Game extends JPanel implements Runnable{// MouseMotionListener, Mou
     
     public void mousePressed(MouseEvent e){
         //add a thread, add into arraylist/vector
-        missile.add(new Missile(player.getPosx(), player.getPosy(), e.getX()-10, e.getY()-35));
+        missile.add(new Missile1(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
     }
     
     public void run() {
@@ -126,6 +123,34 @@ public class Game extends JPanel implements Runnable{// MouseMotionListener, Mou
                 enemy.playerx = player.getPosx();
                 enemy.playery = player.getPosy();
             }
+            
+            for (Enemy e:enemyvector) {
+                if (player.box.intersects(e.box)) {
+                    System.out.println("Ouch");
+                }
+            }
+            
+            for(int i = 0; i < missile.size(); i++){
+                for(int j = 0; j < enemyvector.size(); j++){
+            		if(missile.get(i).box.intersects(enemyvector.elementAt(j).box)){
+            			missile.get(i).destroy();
+            			enemyvector.elementAt(j).kill();
+            		}
+            	}
+            }
+            for(int i = 0; i < missile.size(); i++){
+            	if(missile.get(i).getDestroy()){
+            		missile.remove(i);
+            	}
+            }
+            for(int i = 0; i < enemyvector.size(); i++){
+            	if(enemyvector.elementAt(i).getDead()){
+            		enemyvector.remove(i);
+            	}
+            }
+            System.out.println("missile number" + missile.size());
+            System.out.println("enemy number" + enemyvector.size());
+           
             repaint();
             
         }
