@@ -134,7 +134,8 @@ public class Game extends JPanel implements Runnable{
                 for(int j = 0; j < enemyvector.size(); j++){
             		if(missile.get(i).box.intersects(enemyvector.elementAt(j).box)){
             			missile.get(i).destroy();
-            			enemyvector.elementAt(j).kill();
+            			enemyvector.elementAt(j).health -= missile.get(i).damage;
+                                if (enemyvector.elementAt(j).health <= 0) enemyvector.elementAt(j).kill();
             		}
             	}
             }
