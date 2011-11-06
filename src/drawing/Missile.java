@@ -4,18 +4,17 @@ import java.awt.Rectangle;
 public class Missile implements Runnable{
     private Thread missile;
     private double posx, posy, disx, disy, slope, angle;
-    private final int speed = 10; // lower, missile faster
-    private int width, height;
+    int speed, damage; // lower, missile faster
+    int width, height;
     Rectangle box;
+    private boolean destroyed;
     
-    public Missile(int startx, int starty, int endx, int endy, int w, int h) {
+    public Missile(int startx, int starty, int endx, int endy) {
         posx = startx + 20;
         posy = starty + 20;
         disy = endy - starty;
         disx = endx - startx;
-        width = w;
-        height = h;
-        box = new Rectangle(width, height);
+        destroyed = false;
         slope = disy/disx;
         angle = Math.atan(slope);
         missile = new Thread(this);
@@ -23,9 +22,9 @@ public class Missile implements Runnable{
     }
     
     public void run() {
-        while(true) {
+        while(!destroyed) {
             try {
-                Thread.sleep(speed);
+                Thread.sleep(20);
             }catch (InterruptedException e) {
             }
             move();
@@ -34,13 +33,13 @@ public class Missile implements Runnable{
     
     public void move() {
         if(disx > 0){
-    		posx += 1 * Math.cos(angle);
-    		posy += 1 * Math.sin(angle);
+    		posx += speed * Math.cos(angle);
+    		posy += speed * Math.sin(angle);
     	}else if(disx < 0){
-    		posx -= 1 * Math.cos(angle);
-    		posy += 1 * Math.sin(-angle);
+    		posx -= speed * Math.cos(angle);
+    		posy += speed * Math.sin(-angle);
     	}else{
-    		posy += 1 * Math.sin(angle);
+    		posy += speed * Math.sin(angle);
     	}
         box.setLocation((int)posx,(int)posy);
     }
@@ -59,5 +58,9 @@ public class Missile implements Runnable{
     
     public int getHeight() {
         return height;
+    }
+    
+    public void destroy() {
+        destroyed = true;
     }
 }
