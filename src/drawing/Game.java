@@ -1,29 +1,37 @@
 package drawing;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseEvent;
 import javax.swing.*;
 import java.util.Vector;
-import java.awt.image.*;
-import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
+import java.awt.image.*;
 import java.net.URL;
+import java.awt.MouseInfo;
+import java.awt.geom.AffineTransform;
 
-public class Game extends JPanel implements Runnable {
+public class Game extends JPanel implements Runnable, MouseMotionListener {
     Thread main;
     Player player;
     Vector enemyvector = new Vector();
     Enemy enemy;
-    BufferedImage playerimg;
+    BufferedImage playerimg, bgimg;
+    AffineTransform tx;
+    AffineTransformOp op;
+    int mousex, mousey;
     
     public Game() {
-        URL url = this.getClass().getResource("player.png");
+        URL p1 = this.getClass().getResource("player.png");
+        URL bg = this.getClass().getResource("bg.png");
         try {
-            playerimg = ImageIO.read(url);
+            playerimg = ImageIO.read(p1);
+            bgimg = ImageIO.read(bg);
         } catch (IOException e) {
             System.out.println("error");
         }
+        addMouseMotionListener(this);
         main = new Thread(this);
         player = new Player(40, 40);
         main.start();
@@ -32,13 +40,14 @@ public class Game extends JPanel implements Runnable {
     public void paintComponent (Graphics g) {
         setOpaque(true);
         super.paintComponent(g);
-        setBackground(Color.green);
+        g.drawImage(bgimg, 0, 0, this.getWidth(), this.getHeight(), null);
         g.setColor(Color.red);
         g.drawImage(playerimg, player.getPosx(), player.getPosy(), player.getWidth(), player.getHeight(), null);
         for(int i = 0; i < enemyvector.size(); i++){
             enemy = (Enemy) enemyvector.get(i);
             g.fillOval(enemy.getPosx(), enemy.getPosy(), enemy.getWidth(), enemy.getHeight());
         }
+        g.drawRect(mousex-10, mousey-10,20,20);
     }
     
     public void keyPressed (KeyEvent e) {
@@ -47,6 +56,16 @@ public class Game extends JPanel implements Runnable {
     
     public void keyReleased(KeyEvent e) {
         player.keyReleased(e);
+    }
+    
+    public void mouseMoved(MouseEvent e) {
+        mousex = e.getX();
+        mousey = e.getY();
+    }
+    
+    public void mouseDragged(MouseEvent e) {
+        mousex = e.getX();
+        mousey = e.getY();
     }
     
     public void run() {
@@ -58,7 +77,7 @@ public class Game extends JPanel implements Runnable {
             } catch (InterruptedException e) {
                 System.out.println("Interrupted");
             }
-            //player.setPosx(player.getPosx() + 5);
+            
             for(int i = 0; i < enemyvector.size(); i++){
                 enemy = (Enemy) enemyvector.get(i);
                 enemy.playerx = player.getPosx();

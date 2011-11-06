@@ -14,7 +14,7 @@ public class Main extends JFrame{
     private Game main;
     
     Main () {
-        super("Test Frame");
+        super("Meow Meow Shutter");
         setBounds(100,100,600,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container con = this.getContentPane();
