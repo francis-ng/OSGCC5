@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.awt.image.*;
 import java.net.URL;
+import java.util.Iterator;
 
 public class Game extends JPanel implements Runnable{
     Thread main;
@@ -74,7 +75,7 @@ public class Game extends JPanel implements Runnable{
     
     public void mousePressed(MouseEvent e){
         //add a thread, add into arraylist/vector
-        missile.add(new Missile(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45, 4, 4));
+        missile.add(new Missile1(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
     }
     
     public void run() {
@@ -128,10 +129,15 @@ public class Game extends JPanel implements Runnable{
                     System.out.println("Ouch");
                 }
             }
-            for (Missile m:missile) {
-                for (Enemy e:enemyvector) {
+            Iterator i = missile.iterator();
+            Iterator j = enemyvector.iterator();
+            while (i.hasNext()) {
+                while (j.hasNext()) {
+                    Missile m = (Missile)i.next();
+                    Enemy e = (Enemy)j.next();
                     if (m.box.intersects(e.box)) {
-                        System.out.println("Hit!");
+                        i.remove();
+                        m.destroy();
                     }
                 }
             }
