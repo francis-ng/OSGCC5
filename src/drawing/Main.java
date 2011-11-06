@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package drawing;
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +33,6 @@ public class Main extends JFrame{
         
         this.addKeyListener(new KeyAdapter() {
             public void keyPressed (KeyEvent e) {
-                System.out.println("key pressed");
                 winKeyPress(e);
             }
             
@@ -48,8 +43,6 @@ public class Main extends JFrame{
         setResizable(false);
         setVisible(true);
     }
-    
-    
     
     public static void main(String[] args) {
         new Main();
