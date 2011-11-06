@@ -15,7 +15,7 @@ public class Main extends JFrame{
     
     Main () {
         super("Test Frame");
-        setBounds(100,100,500,500);
+        setBounds(100,100,600,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container con = this.getContentPane();
         main = new Game();
@@ -30,7 +30,7 @@ public class Main extends JFrame{
                 winKeyRelease(e);
             }
         });
-        
+        setResizable(false);
         setVisible(true);
     }
     
