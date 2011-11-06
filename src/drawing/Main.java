@@ -1,25 +1,35 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package drawing;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.*;
 import java.awt.event.*;
-import java.util.*;
 
 public class Main extends JFrame{
 
-    private Game main;
+    private Game main = new Game();
     
     Main () {
         super("Meow Meow Shutter");
         setBounds(100,100,600,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container con = this.getContentPane();
-        main = new Game();
         con.add(main);
+        
+        this.addMouseListener(new MouseAdapter(){
+            public void mousePressed (MouseEvent e){
+                
+                winMousePressed(e);
+            }
+        });
+        
+        this.addMouseMotionListener(new MouseAdapter(){
+            public void mouseMoved (MouseEvent e){
+                winMouseMoved(e);
+            }
+            
+            public void mouseDragged (MouseEvent e){
+                winMouseDragged(e);
+            }
+        });
         
         this.addKeyListener(new KeyAdapter() {
             public void keyPressed (KeyEvent e) {
@@ -30,12 +40,6 @@ public class Main extends JFrame{
                 winKeyRelease(e);
             }
         });
-        this.addMouseListener(new MouseAdapter(){
-            public void mousePressed(MouseEvent e){
-                System.out.println("lala");
-        	mouseClick(e);
-            }
-        });
         setResizable(false);
         setVisible(true);
     }
@@ -44,7 +48,7 @@ public class Main extends JFrame{
         new Main();
     }
     
-    private void winKeyPress (KeyEvent e) {
+    private void winKeyPress (KeyEvent e){
         main.keyPressed(e);
     }
     
@@ -52,7 +56,15 @@ public class Main extends JFrame{
         main.keyReleased(e);
     }
     
-    private void mouseClick(MouseEvent e){
-        main.mouseClicked(e);
+    private void winMousePressed (MouseEvent e){
+        main.mousePressed(e);
+    }
+    
+    private void winMouseMoved (MouseEvent e){
+        main.mouseMoved(e);
+    }
+    
+    private void winMouseDragged (MouseEvent e){
+        main.mouseDragged(e);
     }
 }

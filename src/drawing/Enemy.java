@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package drawing;
 
-/**
- *
- * @author Francis
- */
 public class Enemy implements Runnable{
     Thread enemy;
     boolean dead;

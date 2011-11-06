@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package drawing;
 
 public class Missile implements Runnable{
@@ -10,8 +6,8 @@ public class Missile implements Runnable{
     private final int speed = 10; // lower, missile faster
     
     public Missile(int startx, int starty, int endx, int endy) {
-        posx = startx;
-        posy = starty;
+        posx = startx + 20;
+        posy = starty + 20;
         disy = endy - starty;
         disx = endx - startx;
         slope = disy/disx;
@@ -31,7 +27,7 @@ public class Missile implements Runnable{
     }
     
     public void move() {
-    	if(disx > 0){
+        if(disx > 0){
     		posx += 1 * Math.cos(angle);
     		posy += 1 * Math.sin(angle);
     	}else if(disx < 0){

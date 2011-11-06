@@ -1,8 +1,6 @@
 package drawing;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
 import java.util.*;
@@ -13,17 +11,14 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.awt.image.*;
 import java.net.URL;
-import java.awt.MouseInfo;
 import java.awt.geom.AffineTransform;
 
-public class Game extends JPanel implements Runnable, MouseMotionListener {
+public class Game extends JPanel implements Runnable{// MouseMotionListener, MouseEventListener {
     Thread main;
     Player player;
     Vector enemyvector = new Vector();
     Enemy enemy;
     BufferedImage playerimg, bgimg;
-    AffineTransform tx;
-    AffineTransformOp op;
     int mousex, mousey;
     int score,spawntime;
     int[] enemynumber = new int[1];
@@ -38,7 +33,6 @@ public class Game extends JPanel implements Runnable, MouseMotionListener {
         } catch (IOException e) {
             System.out.println("error");
         }
-        addMouseMotionListener(this);
         main = new Thread(this);
         player = new Player(40, 40);
         missile = new ArrayList<Missile>();
@@ -58,7 +52,7 @@ public class Game extends JPanel implements Runnable, MouseMotionListener {
         for(int i = 0; i < missile.size(); i++){
             g.fillOval(missile.get(i).getPosx(), missile.get(i).getPosy(), 4, 4);
         }
-        g.drawRect(mousex-10, mousey-10,20,20);
+        g.drawRect(mousex, mousey-25,20,20);
     }
     
     public void keyPressed (KeyEvent e) {
@@ -79,9 +73,9 @@ public class Game extends JPanel implements Runnable, MouseMotionListener {
         mousey = e.getY();
     }
     
-    public void mouseClicked(MouseEvent e){
-        System.out.println("Add missile");
-    	missile.add(new Missile(player.getPosx(), player.getPosy(), e.getX()-10, e.getY()-35));
+    public void mousePressed(MouseEvent e){
+        //add a thread, add into arraylist/vector
+        missile.add(new Missile(player.getPosx(), player.getPosy(), e.getX()-10, e.getY()-35));
     }
     
     public void run() {
