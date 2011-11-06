@@ -26,42 +26,10 @@ public class Game extends JPanel implements Runnable {
     }
     
     public void keyPressed (KeyEvent e) {
-        /*switch (e.getKeyCode()) {
-            case 'w':
-                player.moveu = true;
-                break;
-            case 's':
-                player.moved = true;
-                break;
-            case 'a':
-                player.movel = true;
-                break;
-            case 'd':
-                player.mover = true;
-                break;
-            default:
-                break;
-        }*/
         player.keyPressed(e);
     }
     
     public void keyReleased(KeyEvent e) {
-        /*switch (e.getKeyCode()) {
-            case 'w':
-                player.moveu = false;
-                break;
-            case 's':
-                player.moved = false;
-                break;
-            case 'a':
-                player.movel = false;
-                break;
-            case 'd':
-                player.mover = false;
-                break;
-            default:
-                break;
-        }*/
         player.keyReleased(e);
     }
     
