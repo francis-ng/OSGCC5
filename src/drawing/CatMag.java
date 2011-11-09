@@ -9,7 +9,8 @@ public class CatMag extends Enemy implements Runnable{
     public CatMag(int px, int py, int w, int h, int targetx, int targety){
         super(px,py,w,h,targetx,targety);
         delay = 45;
-        health = 20; 
+        maxHealth = 20; 
+        health = maxHealth;
         missiletype = 3;
         score = 20;
         damage = 2;

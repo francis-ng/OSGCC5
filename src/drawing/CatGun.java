@@ -9,7 +9,8 @@ public class CatGun extends Enemy implements Runnable{
     public CatGun(int px, int py, int w, int h, int targetx, int targety){
         super(px,py,w,h,targetx,targety);
         delay = 30;
-        health = 10; 
+        maxHealth = 10; 
+        health = maxHealth;
         missiletype = 2;
         score = 10;
         damage = 1;
