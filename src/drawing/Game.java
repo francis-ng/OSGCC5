@@ -184,7 +184,7 @@ public class Game extends JPanel implements Runnable{
         long now, bossNow, bossReference = 0;
         Random R = new Random();
         Mush mini5 = new Mush(0,0,100,100,player.getPosx(),player.getPosy());
-        mushMissileSpawnTime = 1500;
+        mushMissileSpawnTime = 500;
         
         while (true) {
             if (health <= 0) {
@@ -214,18 +214,18 @@ public class Game extends JPanel implements Runnable{
                 enemynumber[3] = 0;
                 spawntime = 5000;
             }
-            else if (score >= 600 && score < 1200){
+            else if (score >= 600 && score < 1400){
                 enemynumber[0] = 0;
                 enemynumber[1] = 2;
                 enemynumber[2] = 2;
                 enemynumber[3] = 2;
                 spawntime = 4000;
             }
-            else if (score >= 1200) {
-            	enemynumber[0] = 0;
-                enemynumber[1] = 0;
-                enemynumber[2] = 0;
-                enemynumber[3] = 5;
+            else if (score >= 1400) {
+            	enemynumber[0] = 2;
+                enemynumber[1] = 2;
+                enemynumber[2] = 1;
+                enemynumber[3] = 1;
                 spawntime = 5000;
             	if (!bossexists) {
             		enemynumber[4] = 1;
@@ -278,7 +278,7 @@ public class Game extends JPanel implements Runnable{
             bossNow = D.getTime();
             
             if((bossNow - bossReference) > mushMissileSpawnTime && bossexists){
-                mushMissile.add(new Gun(mini5.getPosx()+(mini5.getWidth()/2),mini5.getPosy()+(mini5.getHeight()/2),player.getPosx(), player.getPosy()));
+                mushMissile.add(new Spore(mini5.getPosx()+(mini5.getWidth()/2),mini5.getPosy()+(mini5.getHeight()/2),player.getPosx(), player.getPosy()));
                 bossReference = now;
             }
             
