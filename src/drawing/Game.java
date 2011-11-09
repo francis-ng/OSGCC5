@@ -26,7 +26,7 @@ public class Game extends JPanel implements Runnable{
     int missilenumber = 0;
     int missiletype = 1;
     int health;
-    boolean bossdead, bossexists;
+    boolean win, bossexists;
     
     public Game() {
         URL p1 = this.getClass().getResource("player.png");
@@ -49,7 +49,7 @@ public class Game extends JPanel implements Runnable{
         }
         score = 0;
         health = 500;
-        bossdead = false;
+        win = false;
         bossexists = false;
         main = new Thread(this);
         player = new Player(40, 40);
@@ -66,11 +66,10 @@ public class Game extends JPanel implements Runnable{
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             Font font = new Font("Serif", Font.PLAIN, 50);
             g2.setFont(font);
-            g2.drawString("GAME OVER", 150, 200);
-            g2.drawString("Score",250,280);
-            g2.drawString(Integer.toString(score),250,320);
-        }
-        else if (score >= 2000) {
+            g2.drawString("GAME OVER", 155, 220);
+            g2.drawString("Score  " + Integer.toString(score),215,300);
+        }else
+        if (win) {
             Graphics2D g2 = (Graphics2D)g;
             g.setColor(Color.yellow);
             g.fillRect(0,0,600,600);
@@ -78,9 +77,8 @@ public class Game extends JPanel implements Runnable{
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             Font font = new Font("Serif", Font.PLAIN, 50);
             g2.setFont(font);
-            g2.drawString("YOU WIN", 150, 200);
-            g2.drawString("Score",250,280);
-            g2.drawString(Integer.toString(score),250,320);
+            g2.drawString("YOU WIN", 190, 220);
+            g2.drawString("Score  " + Integer.toString(score),215,300);
         }
         else {
             Graphics2D g2 = (Graphics2D)g;
@@ -177,9 +175,10 @@ public class Game extends JPanel implements Runnable{
         long reference = D.getTime() - 2000;
         long now;
         Random R = new Random();
+        Mush mini5 = new Mush(0,0,100,100,player.getPosx(),player.getPosy());
         
         while (true) {
-            if (health <= 0 || score >= 2000) {
+            if (health <= 0) {
                 break;
             }
             try {
@@ -187,6 +186,11 @@ public class Game extends JPanel implements Runnable{
             } catch (InterruptedException e) {
                 System.out.println("Interrupted");
             }
+            if(mini5.getDead()){
+            	win = true;
+            	break;
+            }
+            enemynumber[4] = 0;
             if (score < 150) {
                 enemynumber[0] = 3;
                 enemynumber[1] = 2;
@@ -201,12 +205,22 @@ public class Game extends JPanel implements Runnable{
                 enemynumber[3] = 0;
                 spawntime = 5000;
             }
-            else {
+            else if (score >= 600 && score < 1200){
                 enemynumber[0] = 0;
-                enemynumber[1] = 1;
+                enemynumber[1] = 2;
                 enemynumber[2] = 2;
                 enemynumber[3] = 2;
+                spawntime = 4000;
+            }
+            else if (score >= 1200) {
+            	enemynumber[0] = 0;
+                enemynumber[1] = 0;
+                enemynumber[2] = 0;
+                enemynumber[3] = 5;
                 spawntime = 5000;
+            	if (!bossexists) {
+            		enemynumber[4] = 1;
+            	}
             }
             D = new Date();
             now = D.getTime();
@@ -240,6 +254,11 @@ public class Game extends JPanel implements Runnable{
                         else if(i == 3){
                         	Catgel mini4 = new Catgel(enemyx,enemyy,40,40,player.getPosx(),player.getPosy());
                             enemyvector.add(mini4);
+                        }
+                        else if(i == 4){
+                        	mini5 = new Mush(enemyx,enemyy,100,100,player.getPosx(),player.getPosy());
+                            enemyvector.add(mini5);
+                            bossexists = true;
                         }
                     }
                 }
