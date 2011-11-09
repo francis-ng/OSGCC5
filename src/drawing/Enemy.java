@@ -5,7 +5,8 @@ import java.awt.image.BufferedImage;
 public class Enemy implements Runnable{
     Thread enemy;
     boolean dead;
-    int posx, posy, width, height, health, playerx, playery, delay;
+    int posx, posy, width, height, playerx, playery, delay;
+    double health, maxHealth;
     Rectangle box;
     int missiletype;
     BufferedImage myimg;
@@ -79,8 +80,12 @@ public class Enemy implements Runnable{
         return height;
     }
     
-    public int getHealth() {
+    public double getHealth() {
         return health;
+    }
+    
+    public double getmaxHealth(){
+        return maxHealth;
     }
     
     public void kill(){

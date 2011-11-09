@@ -8,7 +8,8 @@ public class Catgel extends Enemy implements Runnable{
     public Catgel(int px, int py, int w, int h, int targetx, int targety){
         super(px,py,w,h,targetx,targety);
         delay = 20;
-        health = 40; 
+        maxHealth = 40; 
+        health = maxHealth;
         missiletype = 5;
         score = 40;
         damage = 4;

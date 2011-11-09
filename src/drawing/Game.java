@@ -11,7 +11,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.awt.image.*;
 import java.net.URL;
-import java.util.Iterator;
 
 public class Game extends JPanel implements Runnable{
     Thread main;
@@ -25,7 +24,8 @@ public class Game extends JPanel implements Runnable{
     ArrayList<Missile> missile;
     int missilenumber = 0;
     int missiletype = 1;
-    int health;
+    double maxHealth = 500;
+    double health, healthBar;
     boolean win, bossexists;
     
     public Game() {
@@ -48,7 +48,7 @@ public class Game extends JPanel implements Runnable{
             System.out.println("error");
         }
         score = 0;
-        health = 500;
+        health = maxHealth;
         win = false;
         bossexists = false;
         main = new Thread(this);
@@ -92,7 +92,7 @@ public class Game extends JPanel implements Runnable{
             g2.drawString("Score",10,20);
             g2.drawString("Health", 520,20);
             g2.drawString(Integer.toString(score),10,40);
-            g2.drawString(Integer.toString(health), 520,40);
+            g2.drawString(Double.toString(health), 520,40);
             if (missilenumber == 0) {
                 g.drawImage(camera,280,10,30,30, null);
             } else {
@@ -115,9 +115,13 @@ public class Game extends JPanel implements Runnable{
                 }
             }
             g2.drawString(Integer.toString(missilenumber),320,30);
+            healthBar = health/maxHealth*player.getWidth();
+            g.fillRect(player.getPosx(), player.getPosy() - 5, (int)healthBar, 5);
             g.drawImage(playerimg, player.getPosx(), player.getPosy(), player.getWidth(), player.getHeight(), null);
             for(int i = 0; i < enemyvector.size(); i++){
                 enemy = (Enemy) enemyvector.get(i);
+                healthBar = enemy.getHealth()/enemy.getmaxHealth()*enemy.getWidth();
+                g.fillRect(enemy.getPosx(), enemy.getPosy() - 5, (int)healthBar, 5);
                 g.drawImage(enemy.myimg, enemy.getPosx(), enemy.getPosy(), enemy.getWidth(), enemy.getHeight(), null);
             }
             for(int i = 0; i < missile.size(); i++){
