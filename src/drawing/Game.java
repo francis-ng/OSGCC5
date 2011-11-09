@@ -19,9 +19,9 @@ public class Game extends JPanel implements Runnable{
     Enemy enemy;
     BufferedImage playerimg, bgimg, camera, gun, magic, devil, cross;
     int mousex, mousey;
-    int score,spawntime;
+    int score,spawntime,mushMissileSpawnTime;
     int[] enemynumber = new int[5];
-    ArrayList<Missile> missile;
+    ArrayList<Missile> missile, mushMissile;
     int missilenumber = 0;
     int missiletype = 1;
     double maxHealth = 500;
@@ -54,6 +54,7 @@ public class Game extends JPanel implements Runnable{
         main = new Thread(this);
         player = new Player(40, 40);
         missile = new ArrayList<Missile>();
+        mushMissile = new ArrayList<Missile>();
         main.start();
     }
     
@@ -127,6 +128,9 @@ public class Game extends JPanel implements Runnable{
             for(int i = 0; i < missile.size(); i++){
                 g.drawImage(missile.get(i).myimg, missile.get(i).getPosx(), missile.get(i).getPosy(), missile.get(i).getWidth()+10, missile.get(i).getHeight()+10, null);
             }
+            for(int i = 0; i < mushMissile.size(); i++){
+                g.drawImage(mushMissile.get(i).myimg, mushMissile.get(i).getPosx(), mushMissile.get(i).getPosy(), mushMissile.get(i).getWidth()+10, mushMissile.get(i).getHeight()+10, null);
+            }
             g.drawRect(mousex-15, mousey-35,20,20);
         }
     }
@@ -177,9 +181,10 @@ public class Game extends JPanel implements Runnable{
     public void run() {
         Date D = new Date();
         long reference = D.getTime() - 2000;
-        long now;
+        long now, bossNow, bossReference = 0;
         Random R = new Random();
         Mush mini5 = new Mush(0,0,100,100,player.getPosx(),player.getPosy());
+        mushMissileSpawnTime = 1500;
         
         while (true) {
             if (health <= 0) {
@@ -263,10 +268,18 @@ public class Game extends JPanel implements Runnable{
                         	mini5 = new Mush(enemyx,enemyy,100,100,player.getPosx(),player.getPosy());
                             enemyvector.add(mini5);
                             bossexists = true;
+                            bossReference = D.getTime();
                         }
                     }
                 }
                 reference = now;
+            }
+            
+            bossNow = D.getTime();
+            
+            if((bossNow - bossReference) > mushMissileSpawnTime && bossexists){
+                mushMissile.add(new Gun(mini5.getPosx()+(mini5.getWidth()/2),mini5.getPosy()+(mini5.getHeight()/2),player.getPosx(), player.getPosy()));
+                bossReference = now;
             }
             
             for(int i = 0; i < enemyvector.size(); i++){
@@ -278,6 +291,14 @@ public class Game extends JPanel implements Runnable{
             for (Enemy e:enemyvector) {
                 if (player.box.intersects(e.box)) {
                     health -= e.damage;
+                    System.out.println("health = " + health);
+                }
+            }
+            
+            for (Missile m:mushMissile) {
+                if (player.box.intersects(m.box)) {
+                    health -= m.damage;
+                    m.destroy();
                     System.out.println("health = " + health);
                 }
             }
@@ -305,6 +326,12 @@ public class Game extends JPanel implements Runnable{
             		missile.remove(i);
             	}
             }
+            for(int i = 0; i < mushMissile.size(); i++){
+                if(mushMissile.get(i).getDestroy()){
+            		mushMissile.remove(i);
+                }
+            }
+                
             for(int i = 0; i < enemyvector.size(); i++){
             	if(enemyvector.elementAt(i).getDead()){
             		enemyvector.remove(i);
