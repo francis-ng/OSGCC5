@@ -6,8 +6,8 @@ import javax.imageio.ImageIO;
 public class Mush extends Enemy implements Runnable{
     public Mush(int px, int py, int w, int h, int targetx, int targety){
         super(px,py,w,h,targetx,targety);
-        delay = 40;
-        health = 300; 
+        delay = 45;
+        health = 1000; 
         missiletype = 1;
         score = 200;
         damage = 5;
