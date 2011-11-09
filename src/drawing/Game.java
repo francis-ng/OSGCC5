@@ -70,7 +70,7 @@ public class Game extends JPanel implements Runnable{
             g2.drawString("Score",250,280);
             g2.drawString(Integer.toString(score),250,320);
         }
-        if (score >= 2000) {
+        else if (score >= 2000) {
             Graphics2D g2 = (Graphics2D)g;
             g.setColor(Color.yellow);
             g.fillRect(0,0,600,600);
