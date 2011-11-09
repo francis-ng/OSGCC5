@@ -7,7 +7,8 @@ public class Mush extends Enemy implements Runnable{
     public Mush(int px, int py, int w, int h, int targetx, int targety){
         super(px,py,w,h,targetx,targety);
         delay = 45;
-        health = 1000; 
+        maxHealth = 1000;
+        health = maxHealth;
         missiletype = 1;
         score = 200;
         damage = 5;
