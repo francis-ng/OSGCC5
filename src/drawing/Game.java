@@ -17,16 +17,17 @@ public class Game extends JPanel implements Runnable{
     Player player;
     Vector<Enemy> enemyvector = new Vector();
     Enemy enemy;
-    BufferedImage playerimg, bgimg, camera, gun, magic, devil, cross;
-    int mousex, mousey;
-    int score,spawntime,mushMissileSpawnTime;
+    BufferedImage playerimg, bgimg, camera, gun, magic, devil, cross, winbg, losebg;
+    int mousex, mousey, score,spawntime,mushMissileSpawnTime;
     int[] enemynumber = new int[5];
     ArrayList<Missile> missile, mushMissile;
-    int missilenumber = 0;
-    int missiletype = 1;
-    double maxHealth = 500;
-    double health, healthBar;
-    boolean win, bossexists;
+    int missilenumber = 0, missiletype = 1;
+    double health, healthBar, maxHealth = 500;
+    boolean menu, win, lose, game, bossexists;
+    long now, bossNow, bossReference = 0, reference;
+    Date D;
+    Random R;
+    Mush mini5;
     
     public Game() {
         URL p1 = this.getClass().getResource("player.png");
@@ -36,6 +37,8 @@ public class Game extends JPanel implements Runnable{
         URL magic1 = this.getClass().getResource("magic.png");
         URL devil1 = this.getClass().getResource("devil.png");
         URL cross1 = this.getClass().getResource("cross.png");
+        URL win1 = this.getClass().getResource("win.png");
+        URL lose1 = this.getClass().getResource("lose.png");
         try {
             playerimg = ImageIO.read(p1);
             bgimg = ImageIO.read(bg);
@@ -44,6 +47,8 @@ public class Game extends JPanel implements Runnable{
             magic = ImageIO.read(magic1);
             devil = ImageIO.read(devil1);
             cross = ImageIO.read(cross1);
+            winbg = ImageIO.read(win1);
+            losebg = ImageIO.read(lose1);
         } catch (IOException e) {
             System.out.println("error");
         }
@@ -55,33 +60,33 @@ public class Game extends JPanel implements Runnable{
         player = new Player(40, 40);
         missile = new ArrayList<Missile>();
         mushMissile = new ArrayList<Missile>();
+        game = true;
+        win = false;
+        lose = false;
+        menu = false;
         main.start();
     }
     
     public void paintComponent (Graphics g) {
-        if (health <= 0) {
+        if (lose) {
             Graphics2D g2 = (Graphics2D)g;
-            g.setColor(Color.black);
-            g.fillRect(0,0,600,600);
+            g.drawImage(losebg,0,0,this.getWidth(),this.getHeight(),null);
             g.setColor(Color.red);
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            Font font = new Font("Serif", Font.PLAIN, 50);
+            Font font = new Font("Serif", Font.PLAIN, 40);
             g2.setFont(font);
-            g2.drawString("GAME OVER", 155, 220);
-            g2.drawString("Score  " + Integer.toString(score),215,300);
-        }else
-        if (win) {
-            Graphics2D g2 = (Graphics2D)g;
-            g.setColor(Color.yellow);
-            g.fillRect(0,0,600,600);
-            g.setColor(Color.red);
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            Font font = new Font("Serif", Font.PLAIN, 50);
-            g2.setFont(font);
-            g2.drawString("YOU WIN", 190, 220);
-            g2.drawString("Score  " + Integer.toString(score),215,300);
+            g2.drawString(Integer.toString(score),220,140);
         }
-        else {
+        else if (win) {
+            Graphics2D g2 = (Graphics2D)g;
+            g.drawImage(winbg,0,0,this.getWidth(),this.getHeight(),null);
+            g.setColor(Color.red);
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            Font font = new Font("Serif", Font.PLAIN, 40);
+            g2.setFont(font);
+            g2.drawString(Integer.toString(score),220,140);
+        }
+        else if (game) {
             Graphics2D g2 = (Graphics2D)g;
             setOpaque(true);
             super.paintComponent(g);
@@ -154,193 +159,198 @@ public class Game extends JPanel implements Runnable{
     }
     
     public void mousePressed(MouseEvent e){
-        //add a thread, add into arraylist/vector
-    	if(missilenumber <= 0)
-    		missiletype = 1;
-    	
-    	if(missiletype == 1){
-    		missile.add(new Camera(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
-    	}else{
-    		if(missiletype == 2){
-    			missile.add(new Gun(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
-    		}
-    		if(missiletype == 3){
-    			missile.add(new Mag(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
-    		}
-                if(missiletype == 4){
-    			missile.add(new Devil(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
-    		}
-                if(missiletype == 5){
-                        missile.add(new Cross(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
-                }
-    		missilenumber--;
-    		
-    	}
+        if (game) {
+            if(missilenumber <= 0)
+                    missiletype = 1;
+
+            if(missiletype == 1){
+                    missile.add(new Camera(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+            }else{
+                    if(missiletype == 2){
+                            missile.add(new Gun(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+                    }
+                    if(missiletype == 3){
+                            missile.add(new Mag(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+                    }
+                    if(missiletype == 4){
+                            missile.add(new Devil(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+                    }
+                    if(missiletype == 5){
+                            missile.add(new Cross(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+                    }
+                    missilenumber--;
+            }
+        }
     }
     
     public void run() {
-        Date D = new Date();
-        long reference = D.getTime() - 2000;
-        long now, bossNow, bossReference = 0;
-        Random R = new Random();
-        Mush mini5 = new Mush(0,0,100,100,player.getPosx(),player.getPosy());
+        D = new Date();
+        reference = D.getTime() - 2000;
+        R = new Random();
+        mini5 = new Mush(0,0,100,100,player.getPosx(),player.getPosy());
         mushMissileSpawnTime = 500;
-        
         while (true) {
-            if (health <= 0) {
-                break;
+            while (game) {
+                if (health <= 0) {
+                    game = false;
+                    win = false;
+                    lose = true;
+                    menu = false;
+                }
+                if (mini5.getDead()) {
+                    game = false;
+                    win = true;
+                    lose = false;
+                    menu = false;
+                }
+                rungame();
             }
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                System.out.println("Interrupted");
+        }
+    }
+    
+    void rungame() {
+        try {
+            Thread.sleep(20);
+        } catch (InterruptedException e) {
+            System.out.println("Interrupted");
+        }
+        enemynumber[4] = 0;
+        if (score < 150) {
+            enemynumber[0] = 3;
+            enemynumber[1] = 2;
+            enemynumber[2] = 0;
+            enemynumber[3] = 0;
+            spawntime = 7000;
+        }
+        else if (score >= 150 && score < 600) {
+            enemynumber[0] = 0;
+            enemynumber[1] = 3;
+            enemynumber[2] = 2;
+            enemynumber[3] = 0;
+            spawntime = 5000;
+        }
+        else if (score >= 600 && score < 1400){
+            enemynumber[0] = 0;
+            enemynumber[1] = 2;
+            enemynumber[2] = 2;
+            enemynumber[3] = 2;
+            spawntime = 4000;
+        }
+        else if (score >= 1400) {
+            enemynumber[0] = 2;
+            enemynumber[1] = 2;
+            enemynumber[2] = 1;
+            enemynumber[3] = 1;
+            spawntime = 5000;
+            if (!bossexists) {
+                    enemynumber[4] = 1;
             }
-            if(mini5.getDead()){
-            	win = true;
-            	break;
-            }
-            enemynumber[4] = 0;
-            if (score < 150) {
-                enemynumber[0] = 3;
-                enemynumber[1] = 2;
-                enemynumber[2] = 0;
-                enemynumber[3] = 0;
-                spawntime = 7000;
-            }
-            else if (score >= 150 && score < 600) {
-                enemynumber[0] = 0;
-                enemynumber[1] = 3;
-                enemynumber[2] = 2;
-                enemynumber[3] = 0;
-                spawntime = 5000;
-            }
-            else if (score >= 600 && score < 1400){
-                enemynumber[0] = 0;
-                enemynumber[1] = 2;
-                enemynumber[2] = 2;
-                enemynumber[3] = 2;
-                spawntime = 4000;
-            }
-            else if (score >= 1400) {
-            	enemynumber[0] = 2;
-                enemynumber[1] = 2;
-                enemynumber[2] = 1;
-                enemynumber[3] = 1;
-                spawntime = 5000;
-            	if (!bossexists) {
-            		enemynumber[4] = 1;
-            	}
-            }
-            D = new Date();
-            now = D.getTime();
-            if((now - reference) > spawntime){
-                for(int i = 0; i < enemynumber.length;i++){
-                    for(int j = 0; j < enemynumber[i];j++){
-                        int enemyx, enemyy;
-                        if(R.nextInt(2) == 0){
-                            enemyx = R.nextInt(620);
-                            if(R.nextInt(2) == 0)
-                                enemyy = -20;
-                            else enemyy = 620;
-                        }else{
-                            enemyy = R.nextInt(620);
-                            if(R.nextInt(2) == 0)
-                                enemyx = -20;
-                            else enemyx = 620;
-                        }
-                        if(i == 0){
-                        	CatGun mini1 = new CatGun(enemyx,enemyy,40,40,player.getPosx(),player.getPosy());
-                        	enemyvector.add(mini1);
-                        }
-                        else if(i == 1){
-                        	CatMag mini2 = new CatMag(enemyx,enemyy,40,40,player.getPosx(),player.getPosy());
-                            enemyvector.add(mini2);
-                        }
-                        else if(i == 2){
-                        	Catvil mini3 = new Catvil(enemyx,enemyy,40,40,player.getPosx(),player.getPosy());
-                            enemyvector.add(mini3);
-                        }
-                        else if(i == 3){
-                        	Catgel mini4 = new Catgel(enemyx,enemyy,40,40,player.getPosx(),player.getPosy());
-                            enemyvector.add(mini4);
-                        }
-                        else if(i == 4){
-                        	mini5 = new Mush(enemyx,enemyy,100,100,player.getPosx(),player.getPosy());
-                            enemyvector.add(mini5);
-                            bossexists = true;
-                            bossReference = D.getTime();
-                        }
+        }
+        D = new Date();
+        now = D.getTime();
+        if((now - reference) > spawntime){
+            for(int i = 0; i < enemynumber.length;i++){
+                for(int j = 0; j < enemynumber[i];j++){
+                    int enemyx, enemyy;
+                    if(R.nextInt(2) == 0){
+                        enemyx = R.nextInt(620);
+                        if(R.nextInt(2) == 0)
+                            enemyy = -20;
+                        else enemyy = 620;
+                    }else{
+                        enemyy = R.nextInt(620);
+                        if(R.nextInt(2) == 0)
+                            enemyx = -20;
+                        else enemyx = 620;
+                    }
+                    if(i == 0){
+                            CatGun mini1 = new CatGun(enemyx,enemyy,40,40,player.getPosx(),player.getPosy());
+                            enemyvector.add(mini1);
+                    }
+                    else if(i == 1){
+                            CatMag mini2 = new CatMag(enemyx,enemyy,40,40,player.getPosx(),player.getPosy());
+                        enemyvector.add(mini2);
+                    }
+                    else if(i == 2){
+                            Catvil mini3 = new Catvil(enemyx,enemyy,40,40,player.getPosx(),player.getPosy());
+                        enemyvector.add(mini3);
+                    }
+                    else if(i == 3){
+                            Catgel mini4 = new Catgel(enemyx,enemyy,40,40,player.getPosx(),player.getPosy());
+                        enemyvector.add(mini4);
+                    }
+                    else if(i == 4){
+                            mini5 = new Mush(enemyx,enemyy,100,100,player.getPosx(),player.getPosy());
+                        enemyvector.add(mini5);
+                        bossexists = true;
+                        bossReference = D.getTime();
                     }
                 }
-                reference = now;
             }
-            
-            bossNow = D.getTime();
-            
-            if((bossNow - bossReference) > mushMissileSpawnTime && bossexists){
-                mushMissile.add(new Spore(mini5.getPosx()+(mini5.getWidth()/2),mini5.getPosy()+(mini5.getHeight()/2),player.getPosx(), player.getPosy()));
-                bossReference = now;
-            }
-            
-            for(int i = 0; i < enemyvector.size(); i++){
-                enemy = (Enemy) enemyvector.get(i);
-                enemy.playerx = player.getPosx();
-                enemy.playery = player.getPosy();
-            }
-            
-            for (Enemy e:enemyvector) {
-                if (player.box.intersects(e.box)) {
-                    health -= e.damage;
-                    System.out.println("health = " + health);
-                }
-            }
-            
-            for (Missile m:mushMissile) {
-                if (player.box.intersects(m.box)) {
-                    health -= m.damage;
-                    m.destroy();
-                    System.out.println("health = " + health);
-                }
-            }
-            
-            for(int i = 0; i < missile.size(); i++){
-                for(int j = 0; j < enemyvector.size(); j++){
-            		if(missile.get(i).box.intersects(enemyvector.elementAt(j).box)){
-            			missile.get(i).destroy();
-            			enemyvector.elementAt(j).health -= missile.get(i).damage;
-                        if (enemyvector.elementAt(j).health <= 0) {
-                            enemyvector.elementAt(j).kill();
-                            score += enemyvector.elementAt(j).score;
-                            System.out.println(score);
-                        }
-                        if(missiletype == 1){
-                        	missiletype = enemyvector.elementAt(j).missiletype;
-                        	missilenumber = 10;
-                        }
-                        System.out.println("missiletype " + missiletype);
-            		}
-            	}
-            }
-            for(int i = 0; i < missile.size(); i++){
-            	if(missile.get(i).getDestroy()){
-            		missile.remove(i);
-            	}
-            }
-            for(int i = 0; i < mushMissile.size(); i++){
-                if(mushMissile.get(i).getDestroy()){
-            		mushMissile.remove(i);
-                }
-            }
-                
-            for(int i = 0; i < enemyvector.size(); i++){
-            	if(enemyvector.elementAt(i).getDead()){
-            		enemyvector.remove(i);
-            	}
-            }
-            
-            repaint();
-            
+            reference = now;
         }
-        repaint();
+
+        bossNow = D.getTime();
+
+        if((bossNow - bossReference) > mushMissileSpawnTime && bossexists){
+            mushMissile.add(new Spore(mini5.getPosx()+(mini5.getWidth()/2),mini5.getPosy()+(mini5.getHeight()/2),player.getPosx(), player.getPosy()));
+            bossReference = now;
+        }
+
+        for(int i = 0; i < enemyvector.size(); i++){
+            enemy = (Enemy) enemyvector.get(i);
+            enemy.playerx = player.getPosx();
+            enemy.playery = player.getPosy();
+        }
+
+        for (Enemy e:enemyvector) {
+            if (player.box.intersects(e.box)) {
+                health -= e.damage;
+                System.out.println("health = " + health);
+            }
+        }
+
+        for (Missile m:mushMissile) {
+            if (player.box.intersects(m.box)) {
+                health -= m.damage;
+                m.destroy();
+                System.out.println("health = " + health);
+            }
+        }
+
+        for(int i = 0; i < missile.size(); i++){
+            for(int j = 0; j < enemyvector.size(); j++){
+                if(missile.get(i).box.intersects(enemyvector.elementAt(j).box)){
+                    missile.get(i).destroy();
+                    enemyvector.elementAt(j).health -= missile.get(i).damage;
+                    if (enemyvector.elementAt(j).health <= 0) {
+                        enemyvector.elementAt(j).kill();
+                        score += enemyvector.elementAt(j).score;
+                        System.out.println(score);
+                    }
+                    if(missiletype == 1){
+                            missiletype = enemyvector.elementAt(j).missiletype;
+                            missilenumber = 10;
+                    }
+                }
+            }
+        }
+        for(int i = 0; i < missile.size(); i++){
+            if(missile.get(i).getDestroy()){
+                    missile.remove(i);
+            }
+        }
+        for(int i = 0; i < mushMissile.size(); i++){
+            if(mushMissile.get(i).getDestroy()){
+                    mushMissile.remove(i);
+            }
+        }
+
+        for(int i = 0; i < enemyvector.size(); i++){
+            if(enemyvector.elementAt(i).getDead()){
+                    enemyvector.remove(i);
+            }
+        }
+        repaint();  
     }
 }
