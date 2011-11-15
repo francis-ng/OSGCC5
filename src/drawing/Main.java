@@ -14,32 +14,17 @@ public class Main extends JFrame{
         Container con = this.getContentPane();
         con.add(main);
         
-        this.addMouseListener(new MouseAdapter(){
-            public void mousePressed (MouseEvent e){
-                
-                winMousePressed(e);
-            }
-        });
-        
-        this.addMouseMotionListener(new MouseAdapter(){
-            public void mouseMoved (MouseEvent e){
-                winMouseMoved(e);
-            }
-            
-            public void mouseDragged (MouseEvent e){
-                winMouseDragged(e);
-            }
-        });
-        
         this.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed (KeyEvent e) {
                 winKeyPress(e);
             }
-            
+            @Override
             public void keyReleased (KeyEvent e) {
                 winKeyRelease(e);
             }
         });
+        
         setResizable(false);
         setVisible(true);
     }
@@ -48,23 +33,11 @@ public class Main extends JFrame{
         new Main();
     }
     
-    private void winKeyPress (KeyEvent e){
-        main.keyPressed(e);
+    private void winKeyRelease(KeyEvent e) {
+        main.keyRelease(e);
     }
     
-    private void winKeyRelease (KeyEvent e) {
-        main.keyReleased(e);
-    }
-    
-    private void winMousePressed (MouseEvent e){
-        main.mousePressed(e);
-    }
-    
-    private void winMouseMoved (MouseEvent e){
-        main.mouseMoved(e);
-    }
-    
-    private void winMouseDragged (MouseEvent e){
-        main.mouseDragged(e);
+    private void winKeyPress(KeyEvent e) {
+        main.keyPress(e);
     }
 }

@@ -1,7 +1,6 @@
 package drawing;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 import java.util.Random;
@@ -15,11 +14,11 @@ import java.net.URL;
 public class Game extends JPanel implements Runnable{
     Thread main;
     Player player;
-    Vector<Enemy> enemyvector = new Vector();
+    Vector<Enemy> enemyvector;
     Enemy enemy;
     BufferedImage playerimg, bgimg, camera, gun, magic, devil, cross, winbg, losebg;
     int mousex, mousey, score,spawntime,mushMissileSpawnTime;
-    int[] enemynumber = new int[5];
+    int[] enemynumber;
     ArrayList<Missile> missile, mushMissile;
     int missilenumber = 0, missiletype = 1;
     double health, healthBar, maxHealth = 500;
@@ -54,19 +53,37 @@ public class Game extends JPanel implements Runnable{
         }
         score = 0;
         health = maxHealth;
-        win = false;
         bossexists = false;
         main = new Thread(this);
         player = new Player(40, 40);
         missile = new ArrayList<Missile>();
         mushMissile = new ArrayList<Missile>();
+        enemyvector = new Vector();
+        enemynumber = new int[5];
         game = true;
         win = false;
         lose = false;
         menu = false;
+        this.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed (MouseEvent e){
+                mousePress(e);
+            }
+        });
+        this.addMouseMotionListener(new MouseAdapter(){
+            @Override
+            public void mouseMoved (MouseEvent e){
+                mouseMove(e);
+            }
+            @Override
+            public void mouseDragged (MouseEvent e){
+                mouseDrag(e);
+            }
+        });
         main.start();
     }
     
+    @Override
     public void paintComponent (Graphics g) {
         if (lose) {
             Graphics2D g2 = (Graphics2D)g;
@@ -136,53 +153,69 @@ public class Game extends JPanel implements Runnable{
             for(int i = 0; i < mushMissile.size(); i++){
                 g.drawImage(mushMissile.get(i).myimg, mushMissile.get(i).getPosx(), mushMissile.get(i).getPosy(), mushMissile.get(i).getWidth()+10, mushMissile.get(i).getHeight()+10, null);
             }
-            g.drawRect(mousex-15, mousey-35,20,20);
+            g.drawRect(mousex-10, mousey-10,20,20);
         }
     }
     
-    public void keyPressed (KeyEvent e) {
+    public void keyPress (KeyEvent e) {
         player.keyPressed(e);
     }
     
-    public void keyReleased(KeyEvent e) {
+    public void keyRelease(KeyEvent e) {
         player.keyReleased(e);
     }
     
-    public void mouseMoved(MouseEvent e) {
+    public void mouseMove(MouseEvent e) {
         mousex = e.getX();
         mousey = e.getY();
     }
     
-    public void mouseDragged(MouseEvent e) {
+    public void mouseDrag(MouseEvent e) {
         mousex = e.getX();
         mousey = e.getY();
     }
     
-    public void mousePressed(MouseEvent e){
+    public void mousePress(MouseEvent e){
         if (game) {
             if(missilenumber <= 0)
                     missiletype = 1;
 
             if(missiletype == 1){
-                    missile.add(new Camera(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+                    missile.add(new Camera(player.getPosx(), player.getPosy(), e.getX()-40, e.getY()-25));
             }else{
                     if(missiletype == 2){
-                            missile.add(new Gun(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+                            missile.add(new Gun(player.getPosx(), player.getPosy(), e.getX()-40, e.getY()-25));
                     }
                     if(missiletype == 3){
-                            missile.add(new Mag(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+                            missile.add(new Mag(player.getPosx(), player.getPosy(), e.getX()-40, e.getY()-25));
                     }
                     if(missiletype == 4){
-                            missile.add(new Devil(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+                            missile.add(new Devil(player.getPosx(), player.getPosy(), e.getX()-40, e.getY()-25));
                     }
                     if(missiletype == 5){
-                            missile.add(new Cross(player.getPosx(), player.getPosy(), e.getX()-25, e.getY()-45));
+                            missile.add(new Cross(player.getPosx(), player.getPosy(), e.getX()-40, e.getY()-25));
                     }
                     missilenumber--;
             }
         }
+        if (lose) {
+            score = 0;
+            health = maxHealth;
+            bossexists = false;
+            main = new Thread(this);
+            player = new Player(40, 40);
+            missile = new ArrayList<Missile>();
+            mushMissile = new ArrayList<Missile>();
+            enemyvector = new Vector();
+            enemynumber = new int[5];
+            game = true;
+            win = false;
+            lose = false;
+            menu = false;
+        }
     }
     
+    @Override
     public void run() {
         D = new Date();
         reference = D.getTime() - 2000;
@@ -204,6 +237,8 @@ public class Game extends JPanel implements Runnable{
                     menu = false;
                 }
                 rungame();
+            }
+            while (lose) {
             }
         }
     }
