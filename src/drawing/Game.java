@@ -16,8 +16,9 @@ public class Game extends JPanel implements Runnable{
     Player player;
     Vector<Enemy> enemyvector;
     Enemy enemy;
-    BufferedImage playerimg, bgimg, camera, gun, magic, devil, cross, winbg, losebg;
-    int mousex, mousey, score,spawntime,mushMissileSpawnTime;
+    BufferedImage playerimg, bgimg, camera, gun, magic, devil, cross, winbg, losebg, mainbg;
+    BufferedImage[] startbut, exitbut, helpbut;
+    int mousex, mousey, score,spawntime,mushMissileSpawnTime, starti = 0, helpi = 0, exiti = 0;
     int[] enemynumber;
     ArrayList<Missile> missile, mushMissile;
     int missilenumber = 0, missiletype = 1;
@@ -29,6 +30,9 @@ public class Game extends JPanel implements Runnable{
     Mush mini5;
     
     public Game() {
+        startbut = new BufferedImage[2];
+        helpbut = new BufferedImage[2];
+        exitbut = new BufferedImage[2];
         URL p1 = this.getClass().getResource("player.png");
         URL bg = this.getClass().getResource("bg.png");
         URL camera1 = this.getClass().getResource("cam.png");
@@ -38,6 +42,13 @@ public class Game extends JPanel implements Runnable{
         URL cross1 = this.getClass().getResource("cross.png");
         URL win1 = this.getClass().getResource("win.png");
         URL lose1 = this.getClass().getResource("lose.png");
+        URL main1 = this.getClass().getResource("mainbg.png");
+        URL start = this.getClass().getResource("startbut.png");
+        URL starthl = this.getClass().getResource("startbuthl.png");
+        URL help = this.getClass().getResource("helpbut.png");
+        URL helphl = this.getClass().getResource("helpbuthl.png");
+        URL exit = this.getClass().getResource("exitbut.png");
+        URL exithl = this.getClass().getResource("exitbuthl.png");
         try {
             playerimg = ImageIO.read(p1);
             bgimg = ImageIO.read(bg);
@@ -48,6 +59,13 @@ public class Game extends JPanel implements Runnable{
             cross = ImageIO.read(cross1);
             winbg = ImageIO.read(win1);
             losebg = ImageIO.read(lose1);
+            mainbg = ImageIO.read(main1);
+            startbut[0] = ImageIO.read(start);
+            startbut[1] = ImageIO.read(starthl);
+            helpbut[0] = ImageIO.read(help);
+            helpbut[1] = ImageIO.read(helphl);
+            exitbut[0] = ImageIO.read(exit);
+            exitbut[1] = ImageIO.read(exithl);
         } catch (IOException e) {
             System.out.println("error");
         }
@@ -60,10 +78,10 @@ public class Game extends JPanel implements Runnable{
         mushMissile = new ArrayList<Missile>();
         enemyvector = new Vector();
         enemynumber = new int[5];
-        game = true;
+        game = false;
         win = false;
         lose = false;
-        menu = false;
+        menu = true;
         this.addMouseListener(new MouseAdapter(){
             @Override
             public void mousePressed (MouseEvent e){
@@ -155,6 +173,12 @@ public class Game extends JPanel implements Runnable{
             }
             g.drawRect(mousex-10, mousey-10,20,20);
         }
+        else if (menu) {
+            g.drawImage(mainbg,0,0,this.getWidth(),this.getHeight(),null);
+            g.drawImage(startbut[starti],400,250,150,45,null);
+            g.drawImage(helpbut[helpi],400,350,150,45,null);
+            g.drawImage(exitbut[exiti],400,450,150,45,null);
+        }
     }
     
     public void keyPress (KeyEvent e) {
@@ -198,7 +222,7 @@ public class Game extends JPanel implements Runnable{
                     missilenumber--;
             }
         }
-        if (lose) {
+        else if (lose||win) {
             score = 0;
             health = maxHealth;
             bossexists = false;
@@ -208,10 +232,21 @@ public class Game extends JPanel implements Runnable{
             mushMissile = new ArrayList<Missile>();
             enemyvector = new Vector();
             enemynumber = new int[5];
-            game = true;
+            game = false;
             win = false;
             lose = false;
-            menu = false;
+            menu = true;
+        }
+        else if (menu) {
+            if (mousex <= 550 && mousex >= 400 && mousey <= 295 && mousey >= 250) {
+                game = true;
+                win = false;
+                lose = false;
+                menu = false;
+            }
+            if (mousex <= 550 && mousex >= 400 && mousey <= 495 && mousey >= 450) {
+                System.exit(0);
+            }
         }
     }
     
@@ -239,6 +274,21 @@ public class Game extends JPanel implements Runnable{
                 rungame();
             }
             while (lose) {
+            }
+            while (menu) {
+                if (mousex <= 550 && mousex >= 400 && mousey <= 295 && mousey >= 250) {
+                    starti = 1;
+                }
+                else starti = 0;
+                if (mousex <= 550 && mousex >= 400 && mousey <= 395 && mousey >= 350) {
+                    helpi = 1;
+                }
+                else helpi = 0;
+                if (mousex <= 550 && mousex >= 400 && mousey <= 495 && mousey >= 450) {
+                    exiti = 1;
+                }
+                else exiti = 0;
+                repaint();
             }
         }
     }
