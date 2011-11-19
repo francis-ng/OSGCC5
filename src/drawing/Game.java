@@ -18,8 +18,8 @@ public class Game extends JPanel implements Runnable{
     Vector<Enemy> enemyvector;
     Enemy enemy;
     BufferedImage playerimg, bgimg, camera, gun, magic, devil, cross, winbg, losebg, mainbg;
-    BufferedImage[] startbut, exitbut, helpbut;
-    int mousex, mousey, score,spawntime,mushMissileSpawnTime, starti = 0, helpi = 0, exiti = 0;
+    BufferedImage[] startbut, exitbut, helpbut, retbut;
+    int mousex, mousey, score,spawntime,mushMissileSpawnTime, starti = 0, helpi = 0, exiti = 0, reti = 0;
     int[] enemynumber;
     ArrayList<Missile> missile, mushMissile;
     int missilenumber = 0, missiletype = 1;
@@ -35,6 +35,7 @@ public class Game extends JPanel implements Runnable{
         startbut = new BufferedImage[2];
         helpbut = new BufferedImage[2];
         exitbut = new BufferedImage[2];
+        retbut = new BufferedImage[2];
         URL p1 = this.getClass().getResource("player.png");
         URL bg = this.getClass().getResource("bg.png");
         URL camera1 = this.getClass().getResource("cam.png");
@@ -51,6 +52,8 @@ public class Game extends JPanel implements Runnable{
         URL helphl = this.getClass().getResource("helpbuthl.png");
         URL exit = this.getClass().getResource("exitbut.png");
         URL exithl = this.getClass().getResource("exitbuthl.png");
+        URL back = this.getClass().getResource("retbut.png");
+        URL backhl = this.getClass().getResource("retbuthl.png");
         URL bgmus = this.getClass().getResource("bgm.wav");
         URL gamemus = this.getClass().getResource("battlebgm.wav");
         try {
@@ -70,6 +73,8 @@ public class Game extends JPanel implements Runnable{
             helpbut[1] = ImageIO.read(helphl);
             exitbut[0] = ImageIO.read(exit);
             exitbut[1] = ImageIO.read(exithl);
+            retbut[0] = ImageIO.read(back);
+            retbut[1] = ImageIO.read(backhl);
             AudioInputStream bgsound = AudioSystem.getAudioInputStream(bgmus);
             AudioInputStream gbgsound = AudioSystem.getAudioInputStream(gamemus);
             bgm = AudioSystem.getClip();
@@ -125,6 +130,7 @@ public class Game extends JPanel implements Runnable{
             Font font = new Font("Serif", Font.PLAIN, 40);
             g2.setFont(font);
             g2.drawString(Integer.toString(score),220,140);
+            g.drawImage(retbut[reti],250,500,150,45,null);
         }
         else if (win) {
             Graphics2D g2 = (Graphics2D)g;
@@ -134,6 +140,7 @@ public class Game extends JPanel implements Runnable{
             Font font = new Font("Serif", Font.PLAIN, 40);
             g2.setFont(font);
             g2.drawString(Integer.toString(score),220,140);
+            g.drawImage(retbut[reti],250,500,150,45,null);
         }
         else if (game) {
             Graphics2D g2 = (Graphics2D)g;
@@ -237,22 +244,24 @@ public class Game extends JPanel implements Runnable{
             }
         }
         else if (lose||win) {
-            score = 0;
-            health = maxHealth;
-            bossexists = false;
-            main = new Thread(this);
-            player = new Player(40, 40);
-            missile = new ArrayList<Missile>();
-            mushMissile = new ArrayList<Missile>();
-            enemyvector = new Vector();
-            enemynumber = new int[5];
-            game = false;
-            win = false;
-            lose = false;
-            menu = true;
-            gamebgm.stop();
-            gamebgm.setFramePosition(0);
-            bgm.loop(Clip.LOOP_CONTINUOUSLY);
+            if (mousex <= 400 && mousex >= 250 && mousey <= 545 && mousey >= 500) {
+                score = 0;
+                health = maxHealth;
+                bossexists = false;
+                main = new Thread(this);
+                player = new Player(40, 40);
+                missile = new ArrayList<Missile>();
+                mushMissile = new ArrayList<Missile>();
+                enemyvector = new Vector();
+                enemynumber = new int[5];
+                game = false;
+                win = false;
+                lose = false;
+                menu = true;
+                gamebgm.stop();
+                gamebgm.setFramePosition(0);
+                bgm.loop(Clip.LOOP_CONTINUOUSLY);
+            }
         }
         else if (menu) {
             if (mousex <= 550 && mousex >= 400 && mousey <= 295 && mousey >= 250) {
@@ -294,7 +303,12 @@ public class Game extends JPanel implements Runnable{
                 }
                 rungame();
             }
-            while (lose) {
+            while (lose||win) {
+                if (mousex <= 400 && mousex >= 250 && mousey <= 545 && mousey >= 500) {
+                    reti = 1;
+                }
+                else reti = 0;
+                repaint();
             }
             while (menu) {
                 if (mousex <= 550 && mousex >= 400 && mousey <= 295 && mousey >= 250) {
