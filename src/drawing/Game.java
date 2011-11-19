@@ -6,10 +6,11 @@ import java.util.*;
 import java.util.Random;
 import java.util.Date;
 import java.util.Vector;
-import java.io.IOException;
+import java.io.*;
 import javax.imageio.ImageIO;
 import java.awt.image.*;
 import java.net.URL;
+import javax.sound.sampled.*;
 
 public class Game extends JPanel implements Runnable{
     Thread main;
@@ -28,6 +29,7 @@ public class Game extends JPanel implements Runnable{
     Date D;
     Random R;
     Mush mini5;
+    Clip bgm, gamebgm;
     
     public Game() {
         startbut = new BufferedImage[2];
@@ -49,6 +51,8 @@ public class Game extends JPanel implements Runnable{
         URL helphl = this.getClass().getResource("helpbuthl.png");
         URL exit = this.getClass().getResource("exitbut.png");
         URL exithl = this.getClass().getResource("exitbuthl.png");
+        URL bgmus = this.getClass().getResource("bgm.wav");
+        URL gamemus = this.getClass().getResource("battlebgm.wav");
         try {
             playerimg = ImageIO.read(p1);
             bgimg = ImageIO.read(bg);
@@ -66,8 +70,18 @@ public class Game extends JPanel implements Runnable{
             helpbut[1] = ImageIO.read(helphl);
             exitbut[0] = ImageIO.read(exit);
             exitbut[1] = ImageIO.read(exithl);
+            AudioInputStream bgsound = AudioSystem.getAudioInputStream(bgmus);
+            AudioInputStream gbgsound = AudioSystem.getAudioInputStream(gamemus);
+            bgm = AudioSystem.getClip();
+            bgm.open(bgsound);
+            gamebgm = AudioSystem.getClip();
+            gamebgm.open(gbgsound);
         } catch (IOException e) {
             System.out.println("error");
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
         }
         score = 0;
         health = maxHealth;
@@ -236,6 +250,9 @@ public class Game extends JPanel implements Runnable{
             win = false;
             lose = false;
             menu = true;
+            gamebgm.stop();
+            gamebgm.setFramePosition(0);
+            bgm.loop(Clip.LOOP_CONTINUOUSLY);
         }
         else if (menu) {
             if (mousex <= 550 && mousex >= 400 && mousey <= 295 && mousey >= 250) {
@@ -243,6 +260,9 @@ public class Game extends JPanel implements Runnable{
                 win = false;
                 lose = false;
                 menu = false;
+                bgm.stop();
+                bgm.setFramePosition(0);
+                gamebgm.loop(Clip.LOOP_CONTINUOUSLY);
             }
             if (mousex <= 550 && mousex >= 400 && mousey <= 495 && mousey >= 450) {
                 System.exit(0);
@@ -257,6 +277,7 @@ public class Game extends JPanel implements Runnable{
         R = new Random();
         mini5 = new Mush(0,0,100,100,player.getPosx(),player.getPosy());
         mushMissileSpawnTime = 500;
+        bgm.loop(Clip.LOOP_CONTINUOUSLY);
         while (true) {
             while (game) {
                 if (health <= 0) {
