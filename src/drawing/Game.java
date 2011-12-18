@@ -17,14 +17,14 @@ public class Game extends JPanel implements Runnable{
     Player player;
     Vector<Enemy> enemyvector;
     Enemy enemy;
-    BufferedImage playerimg, bgimg, camera, gun, magic, devil, cross, winbg, losebg, mainbg;
+    BufferedImage playerimg, bgimg, camera, gun, magic, devil, cross, winbg, losebg, mainbg, helpbg;
     BufferedImage[] startbut, exitbut, helpbut, retbut;
     int mousex, mousey, score,spawntime,mushMissileSpawnTime, starti = 0, helpi = 0, exiti = 0, reti = 0;
     int[] enemynumber;
     ArrayList<Missile> missile, mushMissile;
     int missilenumber = 0, missiletype = 1;
     double health, healthBar, maxHealth = 500;
-    boolean menu, win, lose, game, bossexists;
+    boolean menu, win, lose, game, instruc, bossexists;
     long now, bossNow, bossReference = 0, reference;
     Date D;
     Random R;
@@ -56,6 +56,7 @@ public class Game extends JPanel implements Runnable{
         URL backhl = this.getClass().getResource("retbuthl.png");
         URL bgmus = this.getClass().getResource("bgm.wav");
         URL gamemus = this.getClass().getResource("battlebgm.wav");
+        URL bghelp = this.getClass().getResource("help1.png");
         try {
             playerimg = ImageIO.read(p1);
             bgimg = ImageIO.read(bg);
@@ -75,6 +76,7 @@ public class Game extends JPanel implements Runnable{
             exitbut[1] = ImageIO.read(exithl);
             retbut[0] = ImageIO.read(back);
             retbut[1] = ImageIO.read(backhl);
+            helpbg = ImageIO.read(bghelp);
             AudioInputStream bgsound = AudioSystem.getAudioInputStream(bgmus);
             AudioInputStream gbgsound = AudioSystem.getAudioInputStream(gamemus);
             bgm = AudioSystem.getClip();
@@ -101,6 +103,7 @@ public class Game extends JPanel implements Runnable{
         win = false;
         lose = false;
         menu = true;
+        instruc = false;
         this.addMouseListener(new MouseAdapter(){
             @Override
             public void mousePressed (MouseEvent e){
@@ -200,6 +203,9 @@ public class Game extends JPanel implements Runnable{
             g.drawImage(helpbut[helpi],400,350,150,45,null);
             g.drawImage(exitbut[exiti],400,450,150,45,null);
         }
+        else if (instruc) {
+            g.drawImage(helpbg,0,0,this.getWidth(),this.getHeight(),null);
+        }
     }
     
     public void keyPress (KeyEvent e) {
@@ -258,6 +264,7 @@ public class Game extends JPanel implements Runnable{
                 win = false;
                 lose = false;
                 menu = true;
+                instruc = false;
                 gamebgm.stop();
                 gamebgm.setFramePosition(0);
                 bgm.loop(Clip.LOOP_CONTINUOUSLY);
@@ -269,6 +276,7 @@ public class Game extends JPanel implements Runnable{
                 win = false;
                 lose = false;
                 menu = false;
+                instruc = false;
                 bgm.stop();
                 bgm.setFramePosition(0);
                 gamebgm.loop(Clip.LOOP_CONTINUOUSLY);
@@ -276,6 +284,20 @@ public class Game extends JPanel implements Runnable{
             if (mousex <= 550 && mousex >= 400 && mousey <= 495 && mousey >= 450) {
                 System.exit(0);
             }
+            if (mousex <= 550 && mousex >= 400 && mousey <= 395 && mousey >= 350) {
+                game = false;
+                win = false;
+                lose = false;
+                menu = false;
+                instruc = true;
+            }
+        }
+        else if (instruc) {
+            game = false;
+            win = false;
+            lose = false;
+            menu = true;
+            instruc = false;
         }
     }
     
